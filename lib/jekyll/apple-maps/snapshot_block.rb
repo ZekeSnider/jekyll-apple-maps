@@ -17,22 +17,19 @@ module Jekyll
       end
 
       def render(context)
-        Jekyll.logger.info @@log_prefix, "Rendering map snapshot"
-
         content = super
         params = YAML.safe_load(content)
-        center = params['center'] || 'auto'
         width = params['width'] || 600
         height = params['height'] || 300
+        size = "#{width}x#{height}"
         annotations = params['annotations'] || []
         overlays = params['overlays'] || []
         overlay_styles = params['overlay_styles'] || []
         images = params['images'] || []
-        map_type = params['map_type'] || 'standard'
-        color_schemes = params['colorSchemes'] || ['light', 'dark']
-        language = params['language'] || 'en-US'
-        span = params['span'] || nil
-        api_key = ENV['APPLE_MAPS_API_KEY']
+        color_schemes = params['color_schemes'] || ['light', 'dark']
+        show_poi = params['show_poi'] || true ? 1 : 0
+
+        api_key = ENV['APPLE_MAPS_SNAPSHOT_API_KEY']
 
         unless api_key
           log_and_raise("Apple Maps API key not found")
@@ -43,18 +40,18 @@ module Jekyll
         end
 
         query = {
-          center: center,
+          center: params['center'] || 'auto',
           annotations: annotations.to_json,
           overlays: overlays.to_json,
           overlayStyles: overlay_styles.to_json,
           imgs: images.to_json,
-          size: "#{width}x#{height}",
+          size: size,
           z: params['zoom'] || 12,
-          t: map_type,
+          t: params['map_type'] || 'standard',
           scale: params['scale'] || 2,
-          poi: params['show_poi'] || 1,
-          lang: language,
-          spn: span,
+          lang: params['language'] || 'en-US',
+          spn: params['span'] || nil,
+          poi: show_poi,
           token: api_key
         }
         query.compact!
@@ -71,7 +68,6 @@ module Jekyll
         result_tag << "<img src='/#{image_relative_paths.first}' alt='Map of location'>"
         result_tag << "</picture>"
 
-        Jekyll.logger.info @@log_prefix, "Generated picture tag with #{color_schemes.size} color schemes"
         return result_tag
       end
 
@@ -106,7 +102,6 @@ module Jekyll
         @@used_snapshots.add(filename)
 
         if File.exist?(full_path)
-          Jekyll.logger.info @@log_prefix, "Using existing snapshot: #{filename}"
           return relative_path
         end
 

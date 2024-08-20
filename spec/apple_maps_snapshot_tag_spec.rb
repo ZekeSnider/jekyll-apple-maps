@@ -7,10 +7,10 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
   let(:template) {
     <<~TEMPLATE
     center: {{ include.coordinates }}
-    show_poi: 1
+    show_poi: true
     zoom: 14
     width: 600
-    height: 150f
+    height: 150
     annotations: [
       {
         "point": "{{ include.coordinates }}",
@@ -41,7 +41,7 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
   let(:payload) { subject.send(:payload) }
 
   before do
-    ENV['APPLE_MAPS_API_KEY'] = 'test_api_key'
+    ENV['APPLE_MAPS_SNAPSHOT_API_KEY'] = 'test_api_key'
   end
 
   subject do
@@ -69,7 +69,7 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
     end
 
     it 'raises an error when API key is missing' do
-      ENV['APPLE_MAPS_API_KEY'] = nil
+      ENV['APPLE_MAPS_SNAPSHOT_API_KEY'] = nil
       expect { subject.render(context) }.to raise_error(Jekyll::AppleMaps::SnapshotBlock::AppleMapsError, /Apple Maps API key not found/)
     end
   end
