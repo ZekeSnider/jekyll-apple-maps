@@ -19,4 +19,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "pry", "~> 0.14"
   spec.add_development_dependency "liquid", "~> 4.0"
+  spec.add_development_dependency "webmock", "~> 3.23.1"
+  spec.add_development_dependency "fakefs", "~> 2.5"
 end
