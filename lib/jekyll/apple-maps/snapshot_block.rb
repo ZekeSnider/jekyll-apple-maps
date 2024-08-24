@@ -2,6 +2,7 @@ require 'net/http'
 require 'uri'
 require 'json'
 require 'digest'
+require_relative './apple_maps_client.rb'
 
 module Jekyll
   module AppleMaps
@@ -14,6 +15,12 @@ module Jekyll
 
       def initialize(tag_name, markup, options)
         super
+
+        api_key = ENV['APPLE_MAPS_SNAPSHOT_API_KEY']
+        unless api_key
+          log_and_raise("Apple Maps API key not found")
+        end
+        @client = AppleMapsClient.new(api_key)
       end
 
       def render(context)
@@ -28,12 +35,6 @@ module Jekyll
         images = params['images'] || []
         color_schemes = params['color_schemes'] || ['light', 'dark']
         show_poi = params['show_poi'] || true ? 1 : 0
-
-        api_key = ENV['APPLE_MAPS_SNAPSHOT_API_KEY']
-
-        unless api_key
-          log_and_raise("Apple Maps API key not found")
-        end
 
         if color_schemes.empty?
           log_and_raise("Color Schemes cannot be empty")
@@ -52,7 +53,6 @@ module Jekyll
           lang: params['language'] || 'en-US',
           spn: params['span'] || nil,
           poi: show_poi,
-          token: api_key
         }
         query.compact!
 
@@ -91,10 +91,7 @@ module Jekyll
       private
 
       def get_relative_path(context, query)
-        url = "https://snapshot.apple-mapkit.com/api/v1/snapshot"
         hash = Digest::SHA256.hexdigest(query.to_s)
-        uri = URI(url)
-        uri.query = URI.encode_www_form(query)
         filename = "apple_maps_snapshot_#{hash}.png"
         relative_path = "assets/maps/#{filename}"
         full_path = File.join(context.registers[:site].source, relative_path)
@@ -106,12 +103,8 @@ module Jekyll
         end
 
         Jekyll.logger.info @@log_prefix, "Fetching new snapshot from Apple Maps API"
-        response = Net::HTTP.get_response(uri)
-        if !response.is_a?(Net::HTTPSuccess)
-          log_and_raise("Failed to generate map snapshot. Response: #{response.body}, Query: #{query}")
-        end
+        image_data = @client.fetch_snapshot(query)
 
-        image_data = response.body
         FileUtils.mkdir_p(File.dirname(full_path))
         static_file = Jekyll::StaticFile.new(context.registers[:site], context.registers[:site].source,
           File.dirname(relative_path), filename)

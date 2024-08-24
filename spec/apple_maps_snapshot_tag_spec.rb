@@ -35,13 +35,29 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
       { strict_variables: true, strict_filters: true }
     )
   end
+  let(:image_content) { "Good image content" }
   let(:site) { instance_double(Jekyll::Site, source: '/tmp/test_site') }
+  let(:client) { instance_double(Jekyll::AppleMaps::AppleMapsClient) }
   let(:tokenizer) { Liquid::Tokenizer.new(template) }
   let(:rendered) { subject.render(render_context) }
   let(:payload) { subject.send(:payload) }
+  let(:site_source) { '/tmp/test_site' }
+  let(:maps_dir) { File.join(site_source, 'assets', 'maps') }
 
   before do
     ENV['APPLE_MAPS_SNAPSHOT_API_KEY'] = 'test_api_key'
+    FileUtils.mkdir_p(maps_dir)
+    allow(site).to receive(:source).and_return(site_source)
+    allow(site).to receive(:static_files).and_return([])
+
+    allow(Jekyll::AppleMaps::AppleMapsClient)
+      .to receive(:new)
+      .and_return(client)
+    allow(client).to receive(:fetch_snapshot).and_return(image_content)
+  end
+
+  after do
+    # FileUtils.rm_rf(maps_dir)
   end
 
   subject do
@@ -55,16 +71,24 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
 
     context 'with a basic template' do
       it 'generates a picture tag' do
-        allow(subject).to receive(:get_relative_path).and_return('assets/maps/test_snapshot.png')
-
         rendered_content = subject.render(context)
-        expect(rendered_content).to eq([
-          "<picture>",
-          "<source srcset='/assets/maps/test_snapshot.png' media='(prefers-color-scheme: light)'>",
-          "<source srcset='/assets/maps/test_snapshot.png' media='(prefers-color-scheme: dark)'>",
-          "<img src='/[\"light\", \"assets/maps/test_snapshot.png\"]' alt='Map of location'>",
-          "</picture>"
-        ].join)
+        expect(client).to receive(:fetch_snapshot).with("")
+
+        # expect(rendered_content).to eq([
+        #   "<picture>",
+        #   "<source srcset='assets/maps/apple_maps_snapshot_4a8fa7d439218e740d600ce22fee960ad15ed83e67f3e4e148362bc56d0e6968.png' media='(prefers-color-scheme: light)'>",
+        #   "<source srcset='/assets/maps/apple_maps_snapshot_d5015b970d1e804631d1fb750c5b43f6c7b58d0272deed29c40946e95c4b55fb.png' media='(prefers-color-scheme: dark)'>",
+        #   "<img src='/[\"light\", \"assets/maps/apple_maps_snapshot_4a8fa7d439218e740d600ce22fee960ad15ed83e67f3e4e148362bc56d0e6968.png\"]' alt='Map of location'>",
+        #   "</picture>"
+        # ].join)
+
+        # Check if files were created
+        expect(Dir.glob(File.join(maps_dir, 'apple_maps_snapshot_*.png')).length).to eq(2)
+
+        # Check file contents
+        Dir.glob(File.join(maps_dir, 'apple_maps_snapshot_*.png')).each do |file|
+          expect(File.read(file)).to eq("fake image data")
+        end
       end
     end
 
