@@ -54,7 +54,7 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
     allow(site).to receive(:source).and_return(site_source)
     allow(site).to receive(:static_files).and_return([])
 
-    allow(Jekyll::AppleMaps::AppleMapsClient).to receive(:new).with(api_key).and_return(client)
+    allow(Jekyll::AppleMaps::AppleMapsClient).to receive(:new).with(api_key).and_return(client).twice
     allow(client).to receive(:fetch_snapshot).and_return(image_content)
   end
 
@@ -94,6 +94,9 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
         rendered_content = subject.render(context)
 
         expect(rendered_content).to eq("<picture><source srcset='/assets/maps/apple_maps_snapshot_72371e4c60df063e0bfa66136639392ddaae749743afbf4440b9998405ebeb2a.png' media='(prefers-color-scheme: light)'><source srcset='/assets/maps/apple_maps_snapshot_d8c698f67c560f562a3c46f07199bea93cf10c53832f60281725e4a58118cd6c.png' media='(prefers-color-scheme: dark)'><img src='/[\"light\", \"assets/maps/apple_maps_snapshot_72371e4c60df063e0bfa66136639392ddaae749743afbf4440b9998405ebeb2a.png\"]' alt='Map of location'></picture>")
+
+        # Re-render to test regeneration of the same hash
+        subject.render(context)
 
         # Check if files were created
         expect(image_assets.length).to eq(2)
@@ -138,7 +141,7 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
       end
 
       expect(image_assets.length).to eq(4)
-      described_class.cleanup(site)
+      Jekyll::Hooks.trigger :site, :post_write, site
       expect(image_assets.length).to eq(2)
       expect(image_assets).to contain_exactly("/tmp/test_site/assets/maps/apple_maps_snapshot_72371e4c60df063e0bfa66136639392ddaae749743afbf4440b9998405ebeb2a.png",
         "/tmp/test_site/assets/maps/apple_maps_snapshot_d8c698f67c560f562a3c46f07199bea93cf10c53832f60281725e4a58118cd6c.png")
