@@ -12,6 +12,7 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
     zoom: 14
     width: 600
     height: 150
+    color_schemes: #{color_schemes}
     annotations: [
       {
         "point": "33.24767,115.73192",
@@ -23,6 +24,7 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
     {% endapple_maps_snapshot_block %}
     TEMPLATE
   }
+  let(:color_schemes) { ['light', 'dark'] }
   let(:tokenizer) { Liquid::Tokenizer.new(template) }
   let(:tag_name) { 'apple_maps_snapshot_block' }
   let(:page) { make_page }
@@ -39,6 +41,10 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
 
   let(:site_source) { '/tmp/test_site' }
   let(:maps_dir) { File.join(site_source, 'assets', 'maps') }
+
+  def image_assets
+    Dir.glob(File.join(maps_dir, 'apple_maps_snapshot_*.png'))
+  end
 
   before do
     FakeFS.clear!
@@ -90,18 +96,52 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
         expect(rendered_content).to eq("<picture><source srcset='/assets/maps/apple_maps_snapshot_72371e4c60df063e0bfa66136639392ddaae749743afbf4440b9998405ebeb2a.png' media='(prefers-color-scheme: light)'><source srcset='/assets/maps/apple_maps_snapshot_d8c698f67c560f562a3c46f07199bea93cf10c53832f60281725e4a58118cd6c.png' media='(prefers-color-scheme: dark)'><img src='/[\"light\", \"assets/maps/apple_maps_snapshot_72371e4c60df063e0bfa66136639392ddaae749743afbf4440b9998405ebeb2a.png\"]' alt='Map of location'></picture>")
 
         # Check if files were created
-        expect(Dir.glob(File.join(maps_dir, 'apple_maps_snapshot_*.png')).length).to eq(2)
+        expect(image_assets.length).to eq(2)
 
         # Check file contents
-        Dir.glob(File.join(maps_dir, 'apple_maps_snapshot_*.png')).each do |file|
+        image_assets.each do |file|
           expect(File.read(file)).to eq(image_content)
         end
       end
     end
 
-    it 'raises an error when API key is missing' do
-      ENV['APPLE_MAPS_SNAPSHOT_API_KEY'] = nil
-      expect { subject.render(context) }.to raise_error(Jekyll::AppleMaps::SnapshotBlock::AppleMapsError, /Apple Maps API key not found/)
+    context 'with no color schemes' do
+      let(:color_schemes) { [] }
+      it 'raises an exception' do
+        expect { subject.render(context) }.to raise_error(Jekyll::AppleMaps::SnapshotBlock::AppleMapsError, /Color Schemes cannot be empty/)
+      end
+    end
+
+    context 'with invalid color scheme' do
+      let(:color_schemes) { ['light', 'dark', 'invalid thing'] }
+      it 'raises an exception' do
+        expect { subject.render(context) }.to raise_error(Jekyll::AppleMaps::SnapshotBlock::AppleMapsError, /Invalid color scheme specified/)
+      end
+    end
+
+    context 'with no API key' do
+      it 'raises an exception' do
+        ENV['APPLE_MAPS_SNAPSHOT_API_KEY'] = nil
+        expect { subject.render(context) }.to raise_error(Jekyll::AppleMaps::SnapshotBlock::AppleMapsError, /Apple Maps API key not found/)
+      end
+    end
+  end
+
+  describe '#cleanup' do
+    it 'deletes stale files' do
+      subject.render(context)
+      old_files = ["apple_maps_snapshot_file1.png", "apple_maps_snapshot_file2.png"]
+      old_files.each do |file|
+        File.open(File.join(maps_dir, file), 'wb') do |file|
+          file.write(image_content)
+        end
+      end
+
+      expect(image_assets.length).to eq(4)
+      described_class.cleanup(site)
+      expect(image_assets.length).to eq(2)
+      expect(image_assets).to contain_exactly("/tmp/test_site/assets/maps/apple_maps_snapshot_72371e4c60df063e0bfa66136639392ddaae749743afbf4440b9998405ebeb2a.png",
+        "/tmp/test_site/assets/maps/apple_maps_snapshot_d8c698f67c560f562a3c46f07199bea93cf10c53832f60281725e4a58118cd6c.png")
     end
   end
 end
