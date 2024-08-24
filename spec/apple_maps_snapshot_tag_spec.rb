@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'jekyll'
 require 'pry'
+require 'fakefs/safe'
 require_relative '../lib/jekyll/apple-maps/snapshot_block'
 
 RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
@@ -45,6 +46,8 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
   let(:maps_dir) { File.join(site_source, 'assets', 'maps') }
 
   before do
+    FakeFS.clear!
+    FakeFS.activate!
     ENV['APPLE_MAPS_SNAPSHOT_API_KEY'] = 'test_api_key'
     FileUtils.mkdir_p(maps_dir)
     allow(site).to receive(:source).and_return(site_source)
@@ -57,7 +60,7 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
   end
 
   after do
-    # FileUtils.rm_rf(maps_dir)
+    FakeFS.deactivate!
   end
 
   subject do
@@ -71,8 +74,9 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
 
     context 'with a basic template' do
       it 'generates a picture tag' do
+        expect(client).to receive(:fetch_snapshot).twice
         rendered_content = subject.render(context)
-        expect(client).to receive(:fetch_snapshot).with("")
+
 
         # expect(rendered_content).to eq([
         #   "<picture>",
@@ -87,7 +91,7 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
 
         # Check file contents
         Dir.glob(File.join(maps_dir, 'apple_maps_snapshot_*.png')).each do |file|
-          expect(File.read(file)).to eq("fake image data")
+          expect(File.read(file)).to eq(image_content)
         end
       end
     end

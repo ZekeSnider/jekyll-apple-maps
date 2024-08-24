@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'webmock/rspec'
 require 'pry'
-require_relative '../lib/jekyll/apple-maps/apple_maps_client.rb'
+require_relative '../lib/jekyll/apple-maps/client.rb'
 
 RSpec.describe Jekyll::AppleMaps::AppleMapsClient do
   let(:api_key) { 'snapshot_api_key' }

@@ -21,6 +21,7 @@ GEM
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0)
     eventmachine (1.2.7)
+    fakefs (2.5.0)
     ffi (1.17.0)
     forwardable-extended (2.6.0)
     google-protobuf (3.25.3)
@@ -109,6 +110,7 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 2.0)
+  fakefs (~> 2.5)
   jekyll (~> 4.0)
   jekyll-apple-maps!
   liquid (~> 4.0)

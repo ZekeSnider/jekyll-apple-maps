@@ -2,7 +2,7 @@ require 'net/http'
 require 'uri'
 require 'json'
 require 'digest'
-require_relative './apple_maps_client.rb'
+require_relative './client.rb'
 
 module Jekyll
   module AppleMaps
