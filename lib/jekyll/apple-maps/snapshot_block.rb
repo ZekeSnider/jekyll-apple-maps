@@ -34,10 +34,15 @@ module Jekyll
         overlay_styles = params['overlay_styles'] || []
         images = params['images'] || []
         color_schemes = params['color_schemes'] || ['light', 'dark']
+        color_schemes.uniq!
         show_poi = params['show_poi'] || true ? 1 : 0
 
         if color_schemes.empty?
           log_and_raise("Color Schemes cannot be empty")
+        end
+
+        unless color_schemes.all? { |scheme| @@color_schemes.include?(scheme) }
+          log_and_raise("Invalid color scheme specified, only 'light' and 'dark' are allowed")
         end
 
         query = {
