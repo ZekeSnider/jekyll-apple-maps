@@ -34,6 +34,7 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
   let(:image_content) { "Good image content" }
   let(:api_key) { "apple maps api key" }
   let(:site) { instance_double(Jekyll::Site, source: '/tmp/test_site') }
+  let(:base_url) { 'example.com' }
   let(:client) { instance_double(Jekyll::AppleMaps::AppleMapsClient) }
 
   let(:rendered) { subject.render(render_context) }
@@ -51,11 +52,18 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
     FakeFS.activate!
     ENV['APPLE_MAPS_SNAPSHOT_API_KEY'] = api_key
     FileUtils.mkdir_p(maps_dir)
-    allow(site).to receive(:source).and_return(site_source)
-    allow(site).to receive(:static_files).and_return([])
+    allow(site).to receive(:source)
+      .and_return(site_source)
+    allow(site).to receive(:static_files)
+      .and_return([])
+    allow(site).to receive(:config)
+      .and_return({'baseurl' => base_url} )
 
-    allow(Jekyll::AppleMaps::AppleMapsClient).to receive(:new).with(api_key).and_return(client).twice
-    allow(client).to receive(:fetch_snapshot).and_return(image_content)
+    allow(Jekyll::AppleMaps::AppleMapsClient).to receive(:new)
+      .with(api_key)
+      .and_return(client).twice
+    allow(client).to receive(:fetch_snapshot)
+      .and_return(image_content)
   end
 
   after do
@@ -86,10 +94,10 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
         }
 
         expect(client).to receive(:fetch_snapshot)
-          .with(expected_params.merge({:colorScheme => 'dark'}))
+          .with(expected_params.merge({:colorScheme => 'dark'}), base_url)
           .once
         expect(client).to receive(:fetch_snapshot)
-          .with(expected_params.merge({:colorScheme => 'light'}))
+          .with(expected_params.merge({:colorScheme => 'light'}), base_url)
           .once
         rendered_content = subject.render(context)
 

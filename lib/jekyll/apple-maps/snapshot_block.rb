@@ -107,8 +107,10 @@ module Jekyll
           return relative_path
         end
 
+        base_url = context.registers[:site].config['baseurl']
+
         Jekyll.logger.info @@log_prefix, "Fetching new snapshot from Apple Maps API"
-        image_data = @client.fetch_snapshot(query)
+        image_data = @client.fetch_snapshot(query, base_url)
 
         FileUtils.mkdir_p(File.dirname(full_path))
         static_file = Jekyll::StaticFile.new(context.registers[:site], context.registers[:site].source,

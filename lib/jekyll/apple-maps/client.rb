@@ -9,17 +9,22 @@ module Jekyll
       class AppleMapsNetworkError < StandardError; end
 
       @@snapshot_base_url = "https://snapshot.apple-mapkit.com/api/v1/snapshot"
+      @@snapshot_uri = URI(@@snapshot_base_url)
 
       def initialize(api_key)
         @api_key = api_key
       end
 
-      def fetch_snapshot(query)
+      def fetch_snapshot(query, referer)
         query[:token] = @api_key
-        uri = URI(@@snapshot_base_url)
+        uri = @@snapshot_uri.dup
         uri.query = URI.encode_www_form(query)
 
-        response = Net::HTTP.get_response(uri)
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true
+        request = Net::HTTP::Get.new(uri)
+        request['referer'] = referer
+        response = http.request(request)
         unless response.is_a?(Net::HTTPSuccess)
           raise AppleMapsNetworkError, "Failed to generate map snapshot. Response: #{response.body}, Query: #{query}"
         end

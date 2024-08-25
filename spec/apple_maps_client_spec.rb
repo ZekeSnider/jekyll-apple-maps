@@ -5,6 +5,7 @@ require_relative '../lib/jekyll/apple-maps/client.rb'
 
 RSpec.describe Jekyll::AppleMaps::AppleMapsClient do
   let(:api_key) { 'snapshot_api_key' }
+  let(:referer) { 'example.com' }
   let(:base_url) { "https://snapshot.apple-mapkit.com/api/v1/snapshot" }
   let(:query) do
     {
@@ -12,6 +13,11 @@ RSpec.describe Jekyll::AppleMaps::AppleMapsClient do
       "height" => 600
     }
   end
+  let(:expected_headers) {
+    {
+      'referer' => referer
+    }
+  }
   let(:response) { "image data" }
   let(:response_code) { 200 }
 
@@ -33,9 +39,9 @@ RSpec.describe Jekyll::AppleMaps::AppleMapsClient do
           "height" => "600",
           "token" => api_key
         }
-        expect(subject.fetch_snapshot(query)).to eq(response)
+        expect(subject.fetch_snapshot(query, referer)).to eq(response)
         expect(WebMock).to have_requested(:get, base_url)
-          .with(query: exepcted_query_params)
+          .with(query: exepcted_query_params, headers: expected_headers)
           .once
       end
     end
@@ -49,9 +55,9 @@ RSpec.describe Jekyll::AppleMaps::AppleMapsClient do
           "height" => "600",
           "token" => api_key
         }
-        expect{ subject.fetch_snapshot(query) }.to raise_error(an_instance_of(Jekyll::AppleMaps::AppleMapsClient::AppleMapsNetworkError))
+        expect{ subject.fetch_snapshot(query, referer) }.to raise_error(an_instance_of(Jekyll::AppleMaps::AppleMapsClient::AppleMapsNetworkError))
         expect(WebMock).to have_requested(:get, base_url)
-          .with(query: exepcted_query_params)
+          .with(query: exepcted_query_params, headers: expected_headers)
           .once
       end
     end
