@@ -5,15 +5,15 @@ orbs:
   ruby: circleci/ruby@2.0.1
 jobs:
   test-ruby:
-    # Install gems, run rake tests
+    # Install gems, run tests
     docker:
       - image: cimg/ruby:3.2-node
     steps:
       - checkout
       - ruby/install-deps
       - run:
-          name: rake test
-          command: bundle exec rake test
+          name: rspec test
+          command: bundle exec rspec
   deploy:
     # This is an example deploy job, not actually used by the workflow
     docker:
