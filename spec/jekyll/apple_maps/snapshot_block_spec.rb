@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'jekyll'
 require 'pry'
 require 'fakefs/safe'
-require_relative '../lib/jekyll/apple-maps/snapshot_block'
+require_relative '../../../lib/jekyll/apple_maps/snapshot_block'
 
 RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
   let(:template) {
