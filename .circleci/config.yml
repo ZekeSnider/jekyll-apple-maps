@@ -14,7 +14,8 @@ jobs:
           name: rspec test
           command: bundle exec rspec
       - codecov/upload
-          file: coverage/coverage.json
+          file: 'coverage/coverage.json'
+          cli_args: '-v'
 workflows:
   build-and-test:
     jobs:
