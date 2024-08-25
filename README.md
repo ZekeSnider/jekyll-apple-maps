@@ -28,7 +28,7 @@ You can also optionally override the `referer` parameter in your `_config.yml`. 
 
 ```
 apple-maps:
-  referer: example.com
+  referer: https://example.com
 ```
 
 3. Add API Key
@@ -36,7 +36,7 @@ apple-maps:
 To use this plugin, you'll need an Apple Developer account to generate an API key. This plugin uses a "Web Snapshots" Maps token, you can use the steps [listed here](https://developer.apple.com/documentation/mapkitjs/creating_a_maps_token) to generate one.
 
 > [!NOTE]
-> This plugin uses your Jekyll site's `site.url` as the `referer` header on requests to the Apple Maps API. When creating an API key you should either specify your site's url as the domain restriction, or generate a key without a domain restriction.
+> This plugin uses your Jekyll site's `site.url` as the `referer` header on requests to the Apple Maps API by default. As mentioned above, you can also override it in your `_config.yml` file. When creating an API key you should either specify your site's url as the domain restriction, or generate a key without a domain restriction. 
 
 Once you have your API key, you should set the the `APPLE_MAPS_SNAPSHOT_API_KEY` environment variable.
 
