@@ -1,7 +1,7 @@
 # jekyll-apple-maps
 Apple Maps plugin for Jekyll
 
-This gem provides [Jekyll](https://jekyllrb.com) integrations for [Apple Map's server APIs](https://developer.apple.com/documentation/applemapsserverapi/). Currently it supports the following APIs:
+This gem provides [Jekyll](https://jekyllrb.com) integrations for [Apple Maps server APIs](https://developer.apple.com/documentation/applemapsserverapi/). Currently it supports the following APIs:
 
 + [Snapshots](https://developer.apple.com/documentation/snapshots)
   + Supports both light and dark modes with dynamic `picture` tags
@@ -13,20 +13,30 @@ This gem provides [Jekyll](https://jekyllrb.com) integrations for [Apple Map's s
 
 1. Install gem
 
-This plugin is available as the [jekyll-apple-maps RubyGem][https://rubygems.org/gems/jekyll-apple-maps]. You can add it to your project by adding this line to your `Gemfile`: `gem 'jekyll-apple-maps'`. Then run `bundle` to install the gem.
+This plugin is available as the [jekyll-apple-maps RubyGem](https://rubygems.org/gems/jekyll-apple-maps). You can add it to your project by adding this line to your `Gemfile`: `gem 'jekyll-apple-maps'`. Then run `bundle` to install the gem.
 
 2. Add to configuration
 
 After the gem has been installed, you need to add to your site's `_config.yml` to configure the plugin. 
 
 ```
-gems:
+plugins:
 - jekyll-apple-maps
+```
+
+You can also optionally override the `referer` parameter in your `_config.yml`. This can be useful when serving locally, where your site's URL is `localhost` by default.
+
+```
+apple-maps:
+  referer: example.com
 ```
 
 3. Add API Key
 
-To use this plugin, you'll need an Apple Developer account to generate an API key. This plugin uses a Maps token, you can use the steps [listed here](https://developer.apple.com/documentation/mapkitjs/creating_a_maps_token) to generate one.
+To use this plugin, you'll need an Apple Developer account to generate an API key. This plugin uses a "Web Snapshots" Maps token, you can use the steps [listed here](https://developer.apple.com/documentation/mapkitjs/creating_a_maps_token) to generate one.
+
+> [!NOTE]
+> This plugin uses your Jekyll site's `site.url` as the `referer` header on requests to the Apple Maps API. When creating an API key you should either specify your site's url as the domain restriction, or generate a key without a domain restriction.
 
 Once you have your API key, you should set the the `APPLE_MAPS_SNAPSHOT_API_KEY` environment variable.
 
@@ -87,4 +97,14 @@ https://developer.apple.com/maps/web/
 To execute the test suite locally:
 ```
 bundle exec rspec
+```
+
+To build and use the gem locally:
+```
+gem build jekyll-apple-maps.gemspec
+gem install ./jekyll-apple-maps-1.0.0.gem
+```
+
+```
+gem 'jekyll-apple-maps', path: '/PathHere/jekyll-apple-maps'
 ```

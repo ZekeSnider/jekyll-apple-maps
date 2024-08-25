@@ -26,6 +26,7 @@ module Jekyll
         request['referer'] = referer
         response = http.request(request)
         unless response.is_a?(Net::HTTPSuccess)
+          query.delete(:token)
           raise AppleMapsNetworkError, "Failed to generate map snapshot. Response: #{response.body}, Query: #{query}"
         end
 

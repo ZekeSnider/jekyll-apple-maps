@@ -34,7 +34,8 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
   let(:image_content) { "Good image content" }
   let(:api_key) { "apple maps api key" }
   let(:site) { instance_double(Jekyll::Site, source: '/tmp/test_site') }
-  let(:base_url) { 'example.com' }
+  let(:site_url) { 'example.com' }
+  let(:site_config) { {'url' => site_url} }
   let(:client) { instance_double(Jekyll::AppleMaps::AppleMapsClient) }
 
   let(:rendered) { subject.render(render_context) }
@@ -57,7 +58,7 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
     allow(site).to receive(:static_files)
       .and_return([])
     allow(site).to receive(:config)
-      .and_return({'baseurl' => base_url} )
+      .and_return(site_config)
 
     allow(Jekyll::AppleMaps::AppleMapsClient).to receive(:new)
       .with(api_key)
@@ -94,10 +95,10 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
         }
 
         expect(client).to receive(:fetch_snapshot)
-          .with(expected_params.merge({:colorScheme => 'dark'}), base_url)
+          .with(expected_params.merge({:colorScheme => 'dark'}), site_url)
           .once
         expect(client).to receive(:fetch_snapshot)
-          .with(expected_params.merge({:colorScheme => 'light'}), base_url)
+          .with(expected_params.merge({:colorScheme => 'light'}), site_url)
           .once
         rendered_content = subject.render(context)
 
@@ -113,6 +114,17 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
         image_assets.each do |file|
           expect(File.read(file)).to eq(image_content)
         end
+      end
+    end
+
+    context 'with a referer override' do
+      let(:referer_override) { 'myoverride.com' }
+      let(:site_config) { {'url' => site_url, 'apple_maps' => { 'referer' => referer_override }} }
+      it 'uses the correct referer header' do
+        expect(client).to receive(:fetch_snapshot)
+          .with(anything, referer_override)
+          .twice
+        subject.render(context)
       end
     end
 
