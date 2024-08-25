@@ -9,15 +9,12 @@ jobs:
       - image: cimg/ruby:3.2-node
     steps:
       - checkout
-      - ruby/install-deps
+      - ruby/install-deps 
       - run:
           name: rspec test
           command: bundle exec rspec
+      - codecov/upload
 workflows:
   build-and-test:
     jobs:
       - test-ruby
-  upload-to-codecov:
-    jobs:
-      - checkout
-      - codecov/upload
