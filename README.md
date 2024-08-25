@@ -1,5 +1,5 @@
 # jekyll-apple-maps
-[![CircleCI](https://dl.circleci.com/status-badge/img/circleci/aW12qZgMpxbXNYTbdzFe5/FS3eDPqnpMpZJ2cKYi2aN9/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/aW12qZgMpxbXNYTbdzFe5/FS3eDPqnpMpZJ2cKYi2aN9/tree/main)
+[![CircleCI](https://dl.circleci.com/status-badge/img/circleci/aW12qZgMpxbXNYTbdzFe5/FS3eDPqnpMpZJ2cKYi2aN9/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/aW12qZgMpxbXNYTbdzFe5/FS3eDPqnpMpZJ2cKYi2aN9/tree/main) [![codecov](https://codecov.io/gh/ZekeSnider/jekyll-apple-maps/graph/badge.svg?token=2V7NFD77OL)](https://codecov.io/gh/ZekeSnider/jekyll-apple-maps)
 
 Apple Maps plugin for Jekyll
 
