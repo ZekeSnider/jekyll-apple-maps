@@ -1,7 +1,12 @@
 require 'rspec'
 require 'jekyll'
 require 'simplecov'
+require 'simplecov_json_formatter'
 
+SimpleCov.formatters = [
+  SimpleCov::Formatter::HTMLFormatter,
+  SimpleCov::Formatter::JSONFormatter,
+]
 SimpleCov.start
 
 RSpec.configure do |config|

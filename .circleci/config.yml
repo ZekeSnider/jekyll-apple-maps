@@ -1,8 +1,7 @@
-# This config was automatically generated from your source code
-# Stacks detected: deps:ruby:.,package_manager:gemspec:.
 version: 2.1
 orbs:
   ruby: circleci/ruby@2.0.1
+  codecov: codecov/codecov@4.0.1
 jobs:
   test-ruby:
     # Install gems, run tests
@@ -10,23 +9,12 @@ jobs:
       - image: cimg/ruby:3.2-node
     steps:
       - checkout
-      - ruby/install-deps
+      - ruby/install-deps 
       - run:
           name: rspec test
           command: bundle exec rspec
-  deploy:
-    # This is an example deploy job, not actually used by the workflow
-    docker:
-      - image: cimg/base:stable
-    steps:
-      # Replace this with steps to deploy to users
-      - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
+      - codecov/upload
 workflows:
   build-and-test:
     jobs:
       - test-ruby
-    # - deploy:
-    #     requires:
-    #       - test-ruby
