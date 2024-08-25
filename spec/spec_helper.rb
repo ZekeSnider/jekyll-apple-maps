@@ -7,7 +7,9 @@ SimpleCov.formatters = [
   SimpleCov::Formatter::HTMLFormatter,
   SimpleCov::Formatter::JSONFormatter,
 ]
-SimpleCov.start
+SimpleCov.start do
+  add_filter '/spec/'
+end
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
