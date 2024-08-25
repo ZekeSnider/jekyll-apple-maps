@@ -1,4 +1,6 @@
 # jekyll-apple-maps
+[![CircleCI](https://dl.circleci.com/status-badge/img/circleci/aW12qZgMpxbXNYTbdzFe5/FS3eDPqnpMpZJ2cKYi2aN9/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/aW12qZgMpxbXNYTbdzFe5/FS3eDPqnpMpZJ2cKYi2aN9/tree/main)
+
 Apple Maps plugin for Jekyll
 
 This gem provides [Jekyll](https://jekyllrb.com) integrations for [Apple Maps server APIs](https://developer.apple.com/documentation/applemapsserverapi/). Currently it supports the following APIs:
