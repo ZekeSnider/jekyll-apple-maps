@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{Apple Maps plugin for Jekyll}
   spec.description   = %q{Longer description of your plugin}
   spec.homepage      = "https://github.com/zekesnider/jekyll-apple-maps"
-  spec.license       = "Apache"
+  spec.license       = "Apache-2.0"
 
   spec.files         = Dir.glob("{bin,lib}/**/*") + %w(README.md)
   spec.require_paths = ["lib"]
