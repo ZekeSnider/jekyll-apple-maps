@@ -9,6 +9,8 @@ SimpleCov.formatters = [
 ]
 SimpleCov.start do
   add_filter '/spec/'
+  add_filter '/script/'
+  add_filter '/assets/'
 end
 
 RSpec.configure do |config|

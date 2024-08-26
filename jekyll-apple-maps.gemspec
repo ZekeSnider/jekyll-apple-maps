@@ -5,7 +5,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["zekesnider@me.com"]
 
   spec.summary       = %q{Apple Maps plugin for Jekyll}
-  spec.description   = %q{Longer description of your plugin}
+  spec.description   = %q{Provides tags for the Jekyll blogging engine to generate Apple Maps content for your site.}
   spec.homepage      = "https://github.com/zekesnider/jekyll-apple-maps"
   spec.license       = "Apache-2.0"
 
