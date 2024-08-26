@@ -81,7 +81,7 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
     context 'with light and dark mode' do
       it 'generates a picture tag' do
         expected_params = {
-          :annotations=>"[{\"point\":\"33.24767,115.73192\",\"color\":\"449944\",\"glyphText\":\"Salton Sea\",\"markerStyle\":\"large\"}]",
+          :annotations=>"[{\"point\":\"33.24767,115.73192\",\"color\":\"449944\",\"glyphText\":\"S\",\"markerStyle\":\"large\"}]",
           :center=>"auto",
           :imgs=>"[]",
           :lang=>"en-US",
@@ -91,7 +91,8 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
           :scale=>2,
           :size=>"600x150",
           :t=>"standard",
-          :z=>14
+          :z=>14,
+          :scale=>2,
         }
 
         expect(client).to receive(:fetch_snapshot)
@@ -102,7 +103,7 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
           .once
         rendered_content = subject.render(context)
 
-        expect(rendered_content).to eq("<picture><source srcset='/assets/maps/apple_maps_snapshot_72371e4c60df063e0bfa66136639392ddaae749743afbf4440b9998405ebeb2a.png' media='(prefers-color-scheme: light)'><source srcset='/assets/maps/apple_maps_snapshot_d8c698f67c560f562a3c46f07199bea93cf10c53832f60281725e4a58118cd6c.png' media='(prefers-color-scheme: dark)'><img src='/[\"light\", \"assets/maps/apple_maps_snapshot_72371e4c60df063e0bfa66136639392ddaae749743afbf4440b9998405ebeb2a.png\"]' alt='Map of location'></picture>")
+        expect(rendered_content).to eq("<picture><source srcset='/assets/maps/apple_maps_snapshot_7781e90ed95e1f4e0cc83da226eb2c8ee88de95a958cf31ed696979a4f2e3c15.png' media='(prefers-color-scheme: light)'><source srcset='/assets/maps/apple_maps_snapshot_a5aaa99bc91e5c070fb09cf89bbacadc95e6a9651a151d0f7a2a7e0192fc968a.png' media='(prefers-color-scheme: dark)'><img src='/[\"light\", \"assets/maps/apple_maps_snapshot_7781e90ed95e1f4e0cc83da226eb2c8ee88de95a958cf31ed696979a4f2e3c15.png\"]' alt='Map of location'></picture>")
 
         # Re-render to test regeneration of the same hash
         subject.render(context)
@@ -163,8 +164,8 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
       expect(image_assets.length).to eq(4)
       Jekyll::Hooks.trigger :site, :post_write, site
       expect(image_assets.length).to eq(2)
-      expect(image_assets).to contain_exactly("/tmp/test_site/assets/maps/apple_maps_snapshot_72371e4c60df063e0bfa66136639392ddaae749743afbf4440b9998405ebeb2a.png",
-        "/tmp/test_site/assets/maps/apple_maps_snapshot_d8c698f67c560f562a3c46f07199bea93cf10c53832f60281725e4a58118cd6c.png")
+      expect(image_assets).to contain_exactly("/tmp/test_site/assets/maps/apple_maps_snapshot_7781e90ed95e1f4e0cc83da226eb2c8ee88de95a958cf31ed696979a4f2e3c15.png",
+        "/tmp/test_site/assets/maps/apple_maps_snapshot_a5aaa99bc91e5c070fb09cf89bbacadc95e6a9651a151d0f7a2a7e0192fc968a.png")
     end
   end
 end
