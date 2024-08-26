@@ -58,6 +58,7 @@ module Jekyll
           lang: params['language'] || 'en-US',
           spn: params['span'] || nil,
           poi: show_poi,
+          scale: params['scale'] || 2,
         }
         query.compact!
 

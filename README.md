@@ -1,9 +1,9 @@
 # jekyll-apple-maps
 [![CircleCI](https://dl.circleci.com/status-badge/img/circleci/aW12qZgMpxbXNYTbdzFe5/FS3eDPqnpMpZJ2cKYi2aN9/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/aW12qZgMpxbXNYTbdzFe5/FS3eDPqnpMpZJ2cKYi2aN9/tree/main) [![codecov](https://codecov.io/gh/ZekeSnider/jekyll-apple-maps/graph/badge.svg?token=2V7NFD77OL)](https://codecov.io/gh/ZekeSnider/jekyll-apple-maps)
 
-Apple Maps plugin for Jekyll
+![Hero image for jekyll-apple-maps](/assets/hero_image.png)
 
-This gem provides [Jekyll](https://jekyllrb.com) integrations for [Apple Maps server APIs](https://developer.apple.com/documentation/applemapsserverapi/). Currently it supports the following APIs:
+This gem provides [Jekyll](https://jekyllrb.com) integrations for the [Apple Maps server APIs](https://developer.apple.com/documentation/applemapsserverapi/). Currently it supports the following APIs:
 
 + [Snapshots](https://developer.apple.com/documentation/snapshots)
   + Supports both light and dark modes with dynamic `picture` tags
@@ -59,6 +59,7 @@ The following parameters are accepted by the block:
 + `zoom` - Zoom level with the range of `3` to `20`. Defaults to `12`.
 + `width` - Pixel width of the image. Defaults to `600`.
 + `height` -  Pixel height of the image. Defaults to `300`.
++ `scale` - The pixel density of the image. Valid values are `1`, `2`, `3`. Defaults to `2`.
 + `color_schemes` - Array of which color schemes to generate for the map. Options are `light` and `dark`. Defaults to both (`['light', 'dark']`).
 + `overlays` - An array of [overlay objects](https://developer.apple.com/documentation/snapshots/overlay). Defaults to empty `[]`.
 + `annotations` - An array of [annotation objects](https://developer.apple.com/documentation/snapshots/annotation). Defaults to empty `[]`.
@@ -66,23 +67,89 @@ The following parameters are accepted by the block:
 + `images` - An array of [image objects](https://developer.apple.com/documentation/snapshots/image) for annotations. Defaults to empty `[]`.
 
 #### Examples
+A map with a single annotation
 ```
 {% apple_maps_snapshot_block %}
-  center: "33.24767,115.73192"
-  show_poi: 1
-  zoom: 14
+  center: "33.24767,-115.73192"
+  show_poi: true
+  zoom: 6
   width: 600
-  height: 150
+  height: 400
   annotations: [
     {
-      "point": "33.24767,115.73192",
-      "color": "449944",
-      "glyphText": "Salton Sea",
+      "point": "33.24767,-115.73192",
+      "color":"449944",
+      "glyphText": "S",
       "markerStyle": "large"
     }
   ]
 {% endapple_maps_snapshot_block %}
 ```
+![Example map using a single annotation](/assets/single_annotation.png)
+
+Using an image annotation
+```
+{% apple_maps_snapshot_block %}
+  center: "33.24767,-115.73192"
+  show_poi: false
+  zoom: 8
+  width: 600
+  height: 400
+  color_schemes: ["dark"]
+  annotations: [
+    {
+      "markerStyle": "img", 
+      "imgIdx": 0, 
+      "point":"33.24767,-115.73192", 
+      "color":"449944", 
+      "offset": "0,15"
+    }
+  ]
+  images: [
+    {
+      "url": "https://www.iconfinder.com/icons/2376758/download/png/48",
+      "height": 48,
+      "width": 48
+    }
+  ]
+{% endapple_maps_snapshot_block %}
+```
+![Example map using an image annotation](/assets/image_annotation.png)
+
+A map with multiple annotations
+```
+{% apple_maps_snapshot_block %}
+  center: "37.772318, -122.447326"
+  zoom: 11.5
+  width: 600
+  height: 400
+  annotations: [
+    {
+      "point": "37.819724, -122.478557",
+      "color":"red",
+      "glyphText": "G",
+      "markerStyle": "large"
+    },
+    {
+      "point": "37.750472,-122.484132",
+      "color": "blue",
+      "glyphText": "S",
+      "markerStyle": "large"
+    },
+    {
+      "point": "37.755217, -122.452776",
+      "color": "red",
+      "markerStyle": "balloon"
+    },
+    {
+      "point": "37.778457, -122.389238",
+      "color": "orange",
+      "markerStyle": "dot"
+    }
+  ]
+{% endapple_maps_snapshot_block %}
+```
+![Example map using multiple annotations](/assets/multiple_annotations.png)
 
 ## Rate limiting
 Apple specifies the following limits on usage of the Apple Maps Server APIs. This plugin caches snapshot images for the same parameters to avoid regenerating images. But if you initially generate a large number of snapshots (>25,000), you may exceed this limit.
@@ -107,6 +174,17 @@ gem build jekyll-apple-maps.gemspec
 gem install ./jekyll-apple-maps-1.0.0.gem
 ```
 
+You can also use the local version of this gem from your gemfile:
 ```
 gem 'jekyll-apple-maps', path: '/PathHere/jekyll-apple-maps'
+```
+
+There's also a CLI utility for testing templates. 
++ `-s` Is the source directory where the maps assets should be written to
++ `-r` Is the referer header to use for the request
++ `-h` prints help options
+
+When you execute the script you'll paste in the full template text (as seen above in examples).
+```
+./script/render.rb -s /YourUser/Developer/jekyll-test -r https://example.com
 ```

@@ -17,7 +17,7 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
       {
         "point": "33.24767,115.73192",
         "color":"449944",
-        "glyphText": "Salton Sea",
+        "glyphText": "S",
         "markerStyle": "large"
       }
     ]
