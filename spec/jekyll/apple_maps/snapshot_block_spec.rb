@@ -92,7 +92,6 @@ RSpec.describe Jekyll::AppleMaps::SnapshotBlock do
           :size=>"600x150",
           :t=>"standard",
           :z=>14,
-          :scale=>2,
         }
 
         expect(client).to receive(:fetch_snapshot)
