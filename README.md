@@ -3,7 +3,7 @@
 
 ![Hero image for jekyll-apple-maps](/assets/hero_image.png)
 
-This gem provides [Jekyll](https://jekyllrb.com) integrations for the [Apple Maps server APIs](https://developer.apple.com/documentation/applemapsserverapi/). Currently it supports the following APIs:
+This gem provides [Jekyll](https://jekyllrb.com) integrations for the [Apple Maps server APIs](https://developer.apple.com/documentation/applemapsserverapi/). It allows you to include Apple Maps content in your site using Jekyll Liquid tags. Currently it supports the following APIs:
 
 + [Snapshots](https://developer.apple.com/documentation/snapshots)
   + Supports both light and dark modes with dynamic `picture` tags
