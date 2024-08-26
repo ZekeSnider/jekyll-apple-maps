@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "jekyll-apple-maps"
-  spec.version       = "1.0.0"
+  spec.version       = "1.0.1"
   spec.authors       = ["Zeke Snider"]
   spec.email         = ["zekesnider@me.com"]
 
@@ -8,6 +8,14 @@ Gem::Specification.new do |spec|
   spec.description   = %q{Provides tags for the Jekyll blogging engine to generate Apple Maps content for your site.}
   spec.homepage      = "https://github.com/zekesnider/jekyll-apple-maps"
   spec.license       = "Apache-2.0"
+
+  spec.metadata = {
+    "bug_tracker_uri"   => "https://github.com/zekesnider/jekyll-apple-maps/issues",
+    "changelog_uri"     => "https://github.com/ZekeSnider/jekyll-apple-maps/releases",
+    "documentation_uri" => "https://github.com/ZekeSnider/jekyll-apple-maps/",
+    "homepage_uri"      => "https://github.com/ZekeSnider/jekyll-apple-maps/",
+    "source_code_uri"   => "https://github.com/ZekeSnider/jekyll-apple-maps/",
+  }
 
   spec.files         = Dir.glob("{bin,lib}/**/*") + %w(README.md)
   spec.require_paths = ["lib"]
