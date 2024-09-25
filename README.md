@@ -174,6 +174,12 @@ gem build jekyll-apple-maps.gemspec
 gem install ./jekyll-apple-maps-1.0.0.gem
 ```
 
+To publish a new version of the gem:
+
+1. Merge changes to `main` branch with updated version in `lib/jekyll/apple_maps/version.rb` and `jekyll-apple-maps.gemspec`
+2. `gem build jekyll-apple-maps.gemspec`
+3. `gem push jekyll-apple-maps-<version here>.gem`
+
 You can also use the local version of this gem from your gemfile:
 ```
 gem 'jekyll-apple-maps', path: '/PathHere/jekyll-apple-maps'

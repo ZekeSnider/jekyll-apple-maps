@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "jekyll-apple-maps"
-  spec.version       = "1.0.1"
+  spec.version       = "1.0.2"
   spec.authors       = ["Zeke Snider"]
   spec.email         = ["zekesnider@me.com"]
 
